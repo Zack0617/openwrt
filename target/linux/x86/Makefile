@@ -10,7 +10,7 @@ ARCH:=i386
 BOARD:=x86
 BOARDNAME:=x86
 FEATURES:=squashfs ext4 vdi vmdk pcmcia targz fpu
-SUBTARGETS:=generic legacy geode 64
+SUBTARGETS:=64 generic legacy geode
 MAINTAINER:=Felix Fietkau <nbd@nbd.name>
 
 KERNEL_PATCHVER:=4.14
@@ -19,7 +19,8 @@ KERNELNAME:=bzImage
 
 include $(INCLUDE_DIR)/target.mk
 
-DEFAULT_PACKAGES += partx-utils mkf2fs e2fsprogs
+DEFAULT_PACKAGES += partx-utils mkf2fs e2fsprogs kmod-button-hotplug fdiskhtop lm-sensors luci-proto-bonding ca-certificates\
+kmod-e1000e kmod-igb kmod-igbvf kmod-ixgbe kmod-vmxnet3 kmod-i40e kmod-i40evf kmod-fs-f2fs
 
 $(eval $(call BuildTarget))
 
