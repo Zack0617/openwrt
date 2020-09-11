@@ -1,0 +1,33 @@
+#!/bin/sh
+
+uci set luci.main.lang=zh_cn
+uci commit luci
+
+uci set system.@system[0].timezone=CST-8
+uci set system.@system[0].zonename=Asia/Shanghai
+uci commit system
+
+uci set network.lan.ipaddr='192.168.10.253'
+uci set network.lan.proto='static'
+uci set network.lan.type='bridge'
+uci set network.lan.ifname='eth0'
+uci set network.lan.gateway='192.168.10.1'
+uci set network.lan.dns='114.114.114.114 223.5.5.5'
+uci commit network
+
+uci set dhcp.lan.ignore='1'
+uci commit dhcp
+
+sed -i 's/downloads.openwrt.org/openwrt.proxy.ustclug.org/g' /etc/opkg/distfeeds.conf
+sed -i 's/http:/https:/g' /etc/opkg/distfeeds.conf
+sed -i 's/root::0:0:99999:7:::/root:$1$V4UetPzk$CYXluq4wUazHjmCDBCqXF.:0:0:99999:7:::/g' /etc/shadow
+
+sed -i "s/# //g" /etc/opkg/distfeeds.conf
+
+sed -i '/log-facility/d' /etc/dnsmasq.conf
+echo "log-facility=/dev/null" >> /etc/dnsmasq.conf
+
+rm -rf /tmp/luci-modulecache/
+rm -f /tmp/luci-indexcache
+
+exit 0
