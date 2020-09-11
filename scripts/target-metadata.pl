@@ -174,7 +174,7 @@ EOF
 	print <<EOF;
 choice
 	prompt "Target System"
-	default TARGET_ath79
+	default ARGET_x86
 	reset if !DEVEL
 	
 EOF
