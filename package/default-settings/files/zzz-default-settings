@@ -18,7 +18,7 @@ uci commit network
 uci set dhcp.lan.ignore='1'
 uci commit dhcp
 
-sed -i 's/downloads.openwrt.org/mirrors.tuna.tsinghua.edu.cn/openwrt/g' /etc/opkg/distfeeds.conf
+sed -i 's_downloads.openwrt.org_mirrors.tuna.tsinghua.edu.cn/openwrt_' /etc/opkg/distfeeds.conf
 sed -i 's/http:/https:/g' /etc/opkg/distfeeds.conf
 sed -i 's/root::0:0:99999:7:::/root:$1$V4UetPzk$CYXluq4wUazHjmCDBCqXF.:0:0:99999:7:::/g' /etc/shadow
 
