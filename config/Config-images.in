@@ -259,6 +259,7 @@ menu "Target Images"
 		depends on GRUB_IMAGES || GRUB_EFI_IMAGES
 		select TARGET_IMAGES_PAD
 		select PACKAGE_kmod-e1000
+		default y
 
 	config TARGET_IMAGES_PAD
 		bool "Pad images to filesystem size (for JFFS2)"
