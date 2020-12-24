@@ -47,10 +47,10 @@ function act_ping()
 	socket:setopt("socket", "sndtimeo", 3)
 	e.socket = socket:connect(domain, port)
 	socket:close()
-	e.ping = luci.sys.exec("ping -c 1 -W 1 %q 2>&1 | grep -o 'time=[0-9]*.[0-9]' | awk -F '=' '{print$2}'" % domain)
-	if (e.ping == "") then
+-- 	e.ping = luci.sys.exec("ping -c 1 -W 1 %q 2>&1 | grep -o 'time=[0-9]*.[0-9]' | awk -F '=' '{print$2}'" % domain)
+-- 	if (e.ping == "") then
 		e.ping = luci.sys.exec(string.format("echo -n $(tcping -q -c 1 -i 1 -t 2 -p %s %s 2>&1 | grep -o 'time=[0-9]*' | awk -F '=' '{print $2}') 2>/dev/null",port, domain))
-	end
+-- 	end
 	if (iret == 0) then
 		luci.sys.call(" ipset del ss_spec_wan_ac " .. domain)
 	end
@@ -77,7 +77,7 @@ function refresh_data()
 	local retstring = 0
 	local function update(url, file, type, file2)
 		local Num = 1
-		refresh_cmd = "wget-ssl --no-check-certificate -t 3 -T 10 -O- " .. url .. " > /tmp/ssr-update." .. type
+		refresh_cmd = "wget --no-check-certificate -t 3 -T 10 -O- " .. url .. " > /tmp/ssr-update." .. type
 		sret = luci.sys.call(refresh_cmd .. " 2>/dev/null")
 		if sret == 0 then
 			if type == "gfw_data" then

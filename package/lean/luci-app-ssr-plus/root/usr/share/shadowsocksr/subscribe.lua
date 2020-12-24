@@ -122,7 +122,7 @@ local function processData(szType, content)
 		result.alias = result.alias .. base64Decode(params.remarks)
 	elseif szType == 'vmess' then
 		local info = jsonParse(content)
-		result.type = 'v2ray'
+		result.type = 'vmess'
 		result.server = info.add
 		result.server_port = info.port
 		result.transport = info.net
@@ -278,7 +278,7 @@ local function processData(szType, content)
 end
 -- wget
 local function wget(url)
-	local stdout = luci.sys.exec('wget-ssl -q --user-agent="Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/44.0.2403.157 Safari/537.36" --no-check-certificate -t 3 -T 10 -O- "' .. url .. '"')
+	local stdout = luci.sys.exec('wget -q --user-agent="Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/44.0.2403.157 Safari/537.36" --no-check-certificate -t 3 -T 10 -O- "' .. url .. '"')
 	return trim(stdout)
 end
 
@@ -287,7 +287,7 @@ local function check_filer(result)
 		local filter_word = split(filter_words, "/")
 		for i, v in pairs(filter_word) do
 			if result.alias:find(v) then
-				log('订阅节点关键字过滤:“' .. v ..'” ，该节点被丢弃')
+				-- log('订阅节点关键字过滤:“' .. v ..'” ，该节点被丢弃')
 				return true
 			end
 		end
@@ -364,7 +364,7 @@ local execute = function()
 								then
 								log('丢弃无效节点: ' .. result.type ..' 节点, ' .. result.alias)
 							else
-								log('成功解析: ' .. result.type ..' 节点, ' .. result.alias)
+								-- log('成功解析: ' .. result.type ..' 节点, ' .. result.alias)
 								result.grouphashkey = groupHash
 								tinsert(nodeResult[index], result)
 								cache[groupHash][result.hashkey] = nodeResult[index][#nodeResult[index]]

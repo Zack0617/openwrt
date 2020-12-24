@@ -2,7 +2,7 @@ include $(TOPDIR)/rules.mk
 
 PKG_NAME:=luci-app-ssr-plus
 PKG_VERSION:=181
-PKG_RELEASE:=2
+PKG_RELEASE:=4
 
 include $(INCLUDE_DIR)/package.mk
 
@@ -31,7 +31,7 @@ config PACKAGE_$(PKG_NAME)_INCLUDE_Redsocks2
 config PACKAGE_$(PKG_NAME)_INCLUDE_NaiveProxy
 	bool "Include NaiveProxy"
 	depends on !(arc||armeb||mips||mips64||powerpc)
-	default y
+	default n
 
 config PACKAGE_$(PKG_NAME)_INCLUDE_V2ray
 	bool "Include V2ray"
