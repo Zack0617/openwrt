@@ -38,9 +38,11 @@ o.rmempty = false
 o = s:option(ListValue, "udp_relay_server", translate("Game Mode UDP Server"))
 o:value("", translate("Disable"))
 o:value("same", translate("Same as Global Server"))
-for _, key in pairs(key_table) do
-	o:value(key, server_table[key])
+for _,key in pairs(key_table) do 
+	o:value(key,server_table[key]) 
 end
+o.default = "same"
+o.rmempty = false
 
 o = s:option(ListValue, "netflix_server", translate("Netflix Node"))
 o:value("nil", translate("Disable"))
@@ -74,7 +76,7 @@ o:value("gfw", translate("GFW List Mode"))
 o:value("router", translate("IP Route Mode"))
 o:value("all", translate("Global Mode"))
 o:value("oversea", translate("Oversea Mode"))
-o.default = gfw
+o.default = router
 
 o = s:option(ListValue, "dports", translate("Proxy Ports"))
 o:value("1", translate("All Ports"))
