@@ -25,7 +25,25 @@ DEFAULT_PACKAGES:=\
 	uci \
 	uclient-fetch \
 	urandom-seed \
-	urngd
+	urngd \
+	block-mount \
+	kmod-nf-nathelper-extra \
+	kmod-crypto-misc \
+	kmod-crypto-gcm \
+	wget \
+	kmod-cryptodev \
+	kmod-crypto-des \
+	kmod-crypto-md4 \
+	kmod-crypto-md5 \
+	kmod-ipt-raw \
+	curl \
+	libustream-openssl \
+	ca-certificates \
+	default-settings \
+	luci luci-compat \
+	luci-app-ttyd \
+	luci-lib-ipkg\
+	luci-app-ssr-plus
 
 ifneq ($(CONFIG_SELINUX),)
 DEFAULT_PACKAGES+=busybox-selinux procd-selinux
@@ -43,7 +61,7 @@ DEFAULT_PACKAGES.nas:=\
 	mdadm
 # For router targets
 DEFAULT_PACKAGES.router:=\
-	dnsmasq \
+	dnsmasq-full \
 	firewall \
 	ip6tables \
 	iptables \
@@ -51,7 +69,8 @@ DEFAULT_PACKAGES.router:=\
 	odhcp6c \
 	odhcpd-ipv6only \
 	ppp \
-	ppp-mod-pppoe
+	ppp-mod-pppoe \
+	kmod-tcp-bbr
 
 ifneq ($(DUMP),)
   all: dumpinfo
