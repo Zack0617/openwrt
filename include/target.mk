@@ -37,7 +37,6 @@ DEFAULT_PACKAGES:=\
 	kmod-crypto-md5 \
 	kmod-ipt-raw \
 	curl \
-	libustream-openssl \
 	ca-certificates \
 	default-settings \
 	luci luci-compat \
