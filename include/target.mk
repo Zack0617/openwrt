@@ -41,8 +41,9 @@ DEFAULT_PACKAGES:=\
 	default-settings \
 	luci luci-compat \
 	luci-app-ttyd \
-	luci-lib-ipkg\
-	luci-app-ssr-plus
+	luci-lib-ipkg \
+	luci-app-ssr-plus \
+	luci-theme-openwrt-2020
 
 ifneq ($(CONFIG_SELINUX),)
 DEFAULT_PACKAGES+=busybox-selinux procd-selinux
