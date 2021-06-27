@@ -327,7 +327,7 @@ local function processData(szType, content)
 			if not params.type or params.type == "tcp" then
 				if params.security == "xtls" then
 					result.xtls = "1"
-					result.tls_host = params.sni or host[1]
+					result.tls_host = params.sni
 					result.vless_flow = params.flow
 				else
 					result.xtls = "0"
@@ -338,7 +338,7 @@ local function processData(szType, content)
 				result.ws_path = params.path or "/"
 			end
 			if params.type == 'http' then
-				result.h2_host = params.host or host[1]
+				result.h2_host = params.host
 				result.h2_path = params.path or "/"
 			end
 			if params.type == 'kcp' then
@@ -359,10 +359,9 @@ local function processData(szType, content)
 			if params.type == 'grpc' then
 				result.serviceName = params.serviceName
 			end
-			
 			if params.security == "tls" then
 				result.tls = "1"
-				result.tls_host = params.sni or host[1]
+				result.tls_host = params.sni
 			else
 				result.tls = "0"
 			end
@@ -389,7 +388,7 @@ local function processData(szType, content)
 end
 -- wget
 local function wget(url)
-	local stdout = luci.sys.exec('wget -q --user-agent="Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/44.0.2403.157 Safari/537.36" --no-check-certificate -O- "' .. url .. '"')
+	local stdout = luci.sys.exec('uclient-fetch -q --user-agent="Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/44.0.2403.157 Safari/537.36" --no-check-certificate -O- "' .. url .. '"')
 	return trim(stdout)
 end
 
@@ -462,7 +461,7 @@ local execute = function()
 						-- log(result)
 						if result then
 							-- 中文做地址的 也没有人拿中文域名搞，就算中文域也有Puny Code SB 机场
-							if not result.server or not result.server_port or result.alias == "NULL" or check_filer(result) or result.server:match("[^0-9a-zA-Z%-%.%s]") then
+							if not result.server or not result.server_port or result.alias == "NULL" or check_filer(result) or result.server:match("[^0-9a-zA-Z%-%.%s]") or cache[groupHash][result.hashkey] then
 								log('丢弃无效节点: ' .. result.type .. ' 节点, ' .. result.alias)
 							else
 								-- log('成功解析: ' .. result.type ..' 节点, ' .. result.alias)
