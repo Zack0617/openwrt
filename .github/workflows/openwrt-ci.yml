@@ -1,0 +1,105 @@
+#
+# This is free software, lisence use MIT.
+# 
+# Copyright (C) 2019 P3TERX <https://p3terx.com>
+# Copyright (C) 2020 KFERMercer <KFER.Mercer@gmail.com>
+# 
+# <https://github.com/KFERMercer/OpenWrt-CI>
+#
+
+name: OpenWrt-CI
+
+on:
+  watch:
+    types: started
+    branches: 
+      - openwrt-23.05
+  # schedule:
+  #   - cron: 0 20 * * *
+  release:
+    types: [published]
+
+permissions:
+  contents: write
+
+jobs:
+
+  build_openwrt:
+
+    name: Build OpenWrt firmware
+
+    runs-on: ubuntu-latest
+
+    if: github.event.repository.owner.id == github.event.sender.id
+
+    steps:
+
+      - name: Checkout
+        uses: actions/checkout@v3
+        with:
+          ref: openwrt-23.05
+
+      - name: Space cleanup
+        env:
+          DEBIAN_FRONTEND: noninteractive
+        run: |
+          docker rmi `docker images -q`
+          sudo rm -rf /usr/share/dotnet /etc/mysql /etc/php /etc/apt/sources.list.d /usr/local/lib/android
+          sudo -E apt-get -y purge azure-cli ghc* zulu* hhvm llvm* firefox google* dotnet* powershell openjdk* adoptopenjdk* mysql* php* mongodb* dotnet* moby* snapd* || true
+          sudo -E apt-get update
+          sudo -E apt-get -y install build-essential asciidoc binutils bzip2 gawk gettext git libncurses5-dev libz-dev patch python3 unzip zlib1g-dev libc6-dev-i386 subversion flex uglifyjs gcc-multilib g++-multilib p7zip p7zip-full msmtp libssl-dev texinfo libglib2.0-dev xmlto qemu-utils upx libelf-dev autoconf automake libtool autopoint device-tree-compiler antlr3 gperf swig
+          sudo -E apt-get -y autoremove --purge
+          sudo -E apt-get clean
+          sudo -E timedatectl set-timezone "Asia/Shanghai"
+          df -h
+      - name: Update feeds
+        run: |
+          echo "src-git passwall_packages https://github.com/xiaorouji/openwrt-passwall-packages.git;main" >> "feeds.conf.default"
+          echo "src-git passwall2 https://github.com/xiaorouji/openwrt-passwall2.git;main" >> "feeds.conf.default"
+          ./scripts/feeds update -a
+          rm -r feeds/passwall_packages/xray-core
+          ./scripts/feeds install -a
+      - name: Generate configuration file
+        run: |
+          rm -f ./.config*
+          touch ./.config
+          sed -i 's/^[ \t]*//g' ./.config
+          make defconfig
+      - name: Make download
+        run: |
+          make download -j$(nproc) || make download -j1 V=s
+          rm -rf $(find ./dl/ -size -1024c)
+          df -h
+      - name: Compile firmware
+        run: |
+          make -j$(nproc) || make -j1 V=s
+          echo "======================="
+          echo "Space usage:"
+          echo "======================="
+          df -h
+          echo "======================="
+          du -h ./ --max-depth=1
+          du -h /mnt/openwrt/ --max-depth=1 || true
+          
+      - name: Organize files
+        id: organize
+        if: true && !failure() && !cancelled()
+        run: |
+          mkdir -p ./artifact/firmware
+          cp -rf $(find ./bin/targets/ -type f -name "*.gz") ./artifact/firmware/
+          
+      - name: Generate release tag
+        id: tag
+        if: true && !failure() && !cancelled()
+        run: |
+          echo "release_tag=Openwrt-23.05_Nanopi-R4SE-$(date +"%Y.%m.%d-%H%M")" >> $GITHUB_OUTPUT
+          echo "status=success" >> $GITHUB_OUTPUT
+          
+      - name: Upload firmware to release
+        uses: softprops/action-gh-release@v1
+        if: steps.tag.outputs.status == 'success' && !cancelled() && !failure()
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          tag_name: ${{ steps.tag.outputs.release_tag }}
+          files: ./artifact/firmware/openwrt*.gz
