@@ -58,10 +58,9 @@ jobs:
           echo "src-git passwall2 https://github.com/xiaorouji/openwrt-passwall2.git;main" >> "feeds.conf.default"
           ./scripts/feeds update -a
           rm -r feeds/packages/net/xray-core
-          rm -r feeds/packages/lang/golang
           mv feeds/passwall_packages/xray-core feeds/packages/net
-          svn checkout --depth empty https://github.com/openwrt/packages/branches/openwrt-23.05/lang/golang feeds/packages/lang/golang
-          svn update --set-depth infinity feeds/packages/lang/golang
+          sed -i 's/GO_VERSION_PATCH:=3/GO_VERSION_PATCH:=5/g' feeds/packages/lang/golang/golang/Makefile
+          sed -i 's/PKG_HASH:=186f2b6f8c8b704e696821b09ab2041a5c1ee13dcbc3156a13adcf75931ee488/PKG_HASH:=285cbbdf4b6e6e62ed58f370f3f6d8c30825d6e56c5853c66d3c23bcdb09db19/g' feeds/packages/lang/golang/golang/Makefile
           ./scripts/feeds install -a
       - name: Generate configuration file
         run: |
