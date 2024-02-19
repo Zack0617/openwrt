@@ -54,7 +54,7 @@ jobs:
           df -h
       - name: Update feeds
         run: |
-          echo "src-git passwall_packages https://github.com/xiaorouji/openwrt-passwall-packages.git;main" >> "feeds.conf.default"
+          echo "src-git passwall_packages https://github.com/xiaorouji/openwrt-passwall-packages.git^048ff6a7fe69b750cc3a3a8c5ea9e7610bd86bca" >> "feeds.conf.default"
           echo "src-git passwall2 https://github.com/xiaorouji/openwrt-passwall2.git;main" >> "feeds.conf.default"
           ./scripts/feeds update -a
           rm -r feeds/packages/net/xray-core
